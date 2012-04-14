@@ -1,0 +1,58 @@
+Pseudo-hacky sugar around generators. If you use this your code can get unreadable or very simple. Over the last years I never beautified the code, but used it quite sometimes.
+
+
+Basically it looks like this:
+
+	[1, 2, 3] | add(2) | list == [3, 4, 5]
+
+where
+	
+	@worker
+	def add(items, n):
+		for i in items:
+			yield i + n
+
+If you write nested for loops or nested functions a(b(c([1,2,3]))) this might help you.
+
+
+Sometimes you can achieve something like this:
+
+
+	filter_audio_files = fs.filter_by_ext(['.mp3'])
+
+	@producer
+	def folders_with_audio_files(path):
+	    for root, folders, filenames in os.walk(path):
+	        if any(filenames | filter_audio_files):
+	            yield root
+
+
+	@worker
+	def that_need_fix(paths):
+		for path in paths:
+			files     = listdir(path) | filter_audio_files | join_path(path) | list
+			dos_names = files | get_83DOS_name | list
+
+			if files.sort() != dos_names.sort():
+				yield path
+	that_need_fix = that_need_fix()
+
+
+	# and the outermost command looks like this
+
+	folders_with_audio_files(root) | that_need_fix # ...
+
+
+	# note that convetional python doesn't have to be more complex
+	# it's just about code reuse
+	for root, folders, filenames in os.walk(root):
+		files = [file for file in listdir(path) if os.path.splitext(file)[1] in ['.mp3',]]
+		if any(files):
+			files = map(lambda file:os.path.join(root, file), files)
+
+			dos_names = [get_dos_name(file) for file in files]
+
+			if files.sort() != dos_names.sort():
+				yield path
+			
+
