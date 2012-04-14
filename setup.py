@@ -15,9 +15,10 @@ setup(
 	long_description=_read_contents('README'),
 	author="herr kaste",
 	author_email="herr.kaste@gmail.com",
+	url='http://github.com/kaste/useless.pipes'
 	packages=find_packages(exclude=['tests']),
 	install_requires=[],
-	tests_require=['pytest'],
+	tests_require=[],
 	classifiers= [
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
