@@ -1,4 +1,4 @@
-Pseudo-hacky sugar around generators. If you use this your code can get unreadable or very simple. Over the last years I never beautified the code, but used it quite sometimes.
+Pseudo-hacky sugar around generators. If you write nested for loops or nested functions a(b(c([1,2,3]))) this might help you. 
 
 
 Basically it looks like this:
@@ -12,7 +12,20 @@ where
 		for i in items:
 			yield i + n
 
-If you write nested for loops or nested functions a(b(c([1,2,3]))) this might help you.
+The leftmost argument always is the iterator coming from the left side. The other arguments represent a bound state. Using this worker is a two-step process. 
+
+	adder = add(2)                # bind a state in a closure
+	adder([1, 2, 3]) == [3, 4, 5] # apply an iterator
+
+workers tend to be very simple and short, reusable and easy to test.
+
+	@worker
+	def echo(items):
+		for i in items: yield i
+	echo = echo()   # echo 'has' no state
+	assert [1, 2, 3] | echo == [1, 2, 3]
+
+
 
 
 Sometimes you can achieve something like this:
@@ -38,21 +51,15 @@ Sometimes you can achieve something like this:
 	that_need_fix = that_need_fix()
 
 
-	# and the outermost command looks like this
+	# and the outermost commands in a script then look like this
 
-	folders_with_audio_files(root) | that_need_fix # ...
+	#give me all folders with mp3-files inside, e.g. print them to stdout
+	folders_with_audio_files(root)
+	#give me all folder that need a specific fix, aka dry-mode
+	folders_with_audio_files(root) | that_need_fix 
+	#actually apply a fix to these folders
+	folders_with_audio_files(root) | that_need_fix | apply_fix
 
 
-	# note that convetional python doesn't have to be more complex
-	# it's just about code reuse
-	for root, folders, filenames in os.walk(root):
-		files = [file for file in listdir(path) if os.path.splitext(file)[1] in ['.mp3',]]
-		if any(files):
-			files = map(lambda file:os.path.join(root, file), files)
 
-			dos_names = [get_dos_name(file) for file in files]
-
-			if files.sort() != dos_names.sort():
-				yield path
-			
 
