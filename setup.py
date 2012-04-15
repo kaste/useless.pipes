@@ -11,7 +11,7 @@ def _read_contents(fn):
 setup(
 	name='useless.pipes',
 	version=__version__,
-	description='Generator sugar.',
+	description='Sugar around generators.',
 	long_description=_read_contents('README'),
 	author="herr kaste",
 	author_email="herr.kaste@gmail.com",

@@ -1,23 +1,29 @@
-Pseudo-hacky sugar around generators. If you write nested for loops or nested functions a(b(c([1,2,3]))) this might help you. 
+Pseudo-hacky sugar around generators. If you write nested for loops or nested functions ``a(b(c([1,2,3])))`` this might help you. 
 
 
-Basically it looks like this:
+Basically it looks like this::
 
 	[1, 2, 3] | add(2) | list == [3, 4, 5]
 
 where
+
+::
 	
 	@worker
 	def add(items, n):
 		for i in items:
 			yield i + n
 
-The leftmost argument always is the iterator coming from the left side. The other arguments represent a bound state. Using this worker is a two-step process. 
+The leftmost argument always is the iterator coming from the left side. The other arguments represent a bound state. Using this worker is a two-step process.
+
+:: 
 
 	adder = add(2)                # bind a state in a closure
 	adder([1, 2, 3]) == [3, 4, 5] # apply an iterator
 
 workers tend to be very simple and short, reusable and easy to test.
+
+::
 
 	@worker
 	def echo(items):
@@ -28,7 +34,7 @@ workers tend to be very simple and short, reusable and easy to test.
 
 
 
-Sometimes you can achieve something like this:
+Sometimes you can achieve something like this::
 
 
 	filter_audio_files = fs.filter_by_ext(['.mp3'])
